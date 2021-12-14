@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>On-line Meeting Platform with Detect Cheating Function</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+	<link href="/styles.css" rel="stylesheet" />
+	<link rel="icon" href="http://192.9.85.187:4000/img/favicon.ico" />
+</head>
+
+<body>
+
+	<div id="video-chat-lobby">
+		<h2 class="text">G - Meet</h2>
+		<img src="./img/logo.png">
+<br><br>
+		<input id="numberInput" type="text" placeholder="수험자 이름" />
+		<input id="passwordInput" type="text" placeholder="수험번호" />
+		<button id="join" class="login-button">Log In</button>
+	</div>
+	<div id="main-room">
+		<div id="left">
+			<div id="screen-room">
+				<center><video id="user-video" width="200" height="200"></video></center>
+			</div>
+			<div id="video-chat-room">	
+				<center><video id="peer-video" width="720" height="720"></video>
+					<div id="test-paper" width="9000" height="680"><img src="./img/icon/testpaper.png" width="860" height="670"></div>
+				</center>
+			</div>
+			<div id="button-for-meeting">
+				<center>
+					<button id="mute" class="image-button"><img src="./img/icon/micOnButton.png"
+							style="width:65px; height:65px;" id="mute1"></button>
+					<button id="hideCamera" class="image-button"><img src="./img/icon/videoOnButton.png"
+							style="width:65px; height:65px;" id="hide1"></button>
+					<button id="leaveRoom" class="image-button"><img src="./img/icon/connectOffButton.png"
+							style="width:65px; height:65px;" id="leave1"></button>
+				</center>
+			</div>
+		</div>
+		<div id="right">
+			<div id="timer">
+				<div id=nonCreator-set>
+					<div id="time1"><p class="timer">00 : 00</p></div>
+				</div>
+				
+				<div id="creator-set">
+					<div id="time2"><p class="timer">00 : 00</p></div>
+					<input type="text" placeholder="ex) 1 hour = 60 " id="time-input"> </input>
+					<div id="time-button-set">
+						<button id="setTime"class="util-button">set</button>
+						<button id="startTimer"class="util-button">start</button>
+						<button id ="stopTimer"class="util-button">stop</button>
+					</div>
+				</div>
+			</div>
+			<div id="graph">
+				<img id="graphPic" src="./plotImage/standard.png" width="500px" height="400px" alt="그래프를 도출 중입니다"/>
+			</div>
+			<div id="chatting"><div id="chatlog" ></div></div>
+			<div id="chat-util">
+				
+				<input type="text" placeholder="채팅을 입력하세요" id="chat-input"> </input>
+				
+				<button id="chat-button">전송</button>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://cdn.socket.io/3.0.5/socket.io.min.js"></script>
+<!-- <script src="https://cdn.WebRTC-Experiment.com/getScreenId.js"></script> -->
+<!-- <script src="https://cdn.rawgit.com/muaz-khan/getScreenId/master/getScreenId.js"></script> -->
+<script src="https://www.webrtc-experiment.com/Screen-Capturing.js"></script>
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<script src="https://cdn.WebRTC-Experiment.com/getScreenId.js"></script>
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<script src="/chat.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+</html>
+
+

@@ -1,0 +1,224 @@
+/*
+* {
+	font-family: 'Bebas Neue', cursive;
+}
+*/
+
+html {
+	height: 100%;
+	background-color: white;
+}
+
+body {
+  background-color: white;
+  font-family: "Helvetica";
+  margin: 0px;
+  height: 100%;
+}
+
+div {
+	height: 100%;
+}
+
+h2 {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 150px;
+  padding: 10px 5px;
+  margin-top: 40px;
+  margin-bottom: 0px;
+}
+
+#chat-input{
+  width: 90%;
+  height: 100%;
+  float: left;
+  border:0;
+  border-radius:2px ;
+}
+#chat-button{
+  width: 10%;
+  height: 100%;
+  float:right;
+  
+}
+#video-chat-lobby {
+  display: inherit;
+  text-align: center;
+  max-width: 600px;
+  background-color: white;
+  margin: 30px auto;
+}
+#timer {
+  width: 100%;
+  height: 25%;
+  display: inline-block;
+  text-align: center;
+}
+#time1{
+  height: 50%;
+  margin-top: 50px;
+  font-size: 75px;
+  display: inline-block;
+}
+#time2{
+  height: 50%;
+  font-size: 75px;
+  
+  display: inline-block;
+}
+#time-input {
+  display:inline-block;
+  height: 20%;
+  width: 80%;
+}
+#nonCreator-set {
+  margin-top:50px;
+  height:100%;
+  display:none;
+}
+#creator-set {
+  height:100%;
+  display:none;
+}
+#time-button-set{
+  float:left;
+}
+#graph {
+	width: 100%;
+	height: 35%;
+	min-height: 30%;
+}
+#test-paper {
+  display: none;
+}
+video {
+	border-radius: 10%;
+}
+
+#screen-room {
+	height: 200px;
+}
+#video-chat-room {
+	height: 720px;
+  background-color: #1E1E1E;
+}
+
+#chatting {
+  height: 30%;
+  float: bottom;
+}
+#button-for-meeting {
+  float: left;
+  height: 87px;
+  background-color: #1E1E1E;
+  /* border-top: 1px solid black; */
+}
+#chatlog {
+	overflow: auto;
+	margin: 10px;
+  margin-top: 30px;
+	height: 100%;
+  font-size: 20px;
+  text-align: left;
+}
+#chat-util {
+	height: 5%;
+  width: 95%;
+  border: 2px solid black;
+  /* border-radius: 10px; */
+  display: inline-block;
+}
+#chat-window {
+  height: 400px;
+  overflow: auto;
+  background: #f9f9f9;
+}
+
+#output p {
+  padding: 14px 0px;
+  margin: 0 20px;
+  border-bottom: 1px solid #e9e9e9;
+  color: #555;
+}
+
+div {
+	width: 100%;
+}
+
+#left {
+	width: 75%;
+	height: 100%;
+	float: left;
+	box-sizing: border-box;
+	background-color: #1E1E1E;
+}
+#right {
+	width: 25%;
+	height: 100%;
+	float: right;
+	box-sizing: border-box;
+  text-align: center;
+}
+
+
+#feedback p {
+  color: #aaa;
+  padding: 14px 0px;
+  margin: 0 20px;
+}
+
+#output strong {
+  color: #000000;
+}
+
+label {
+  box-sizing: border-box;
+  display: block;
+  padding: 10px 20px;
+}
+
+input {
+  padding: 20px;
+  box-sizing: border-box;
+  background: #eee;
+  display: block;
+  width: 100%;
+  background: rgb(255, 253, 253);
+  font-family: Nunito;
+  font-size: 16px;
+}
+
+.util-button {
+  background: #404649;
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  color: #fff;
+  text-align: center;
+  font-size: 18px;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border: none;
+}
+.image-button{
+  padding: 15px;
+  background-color:transparent;
+  border:0;
+}
+.login-button {
+	background: #404649;
+	color: #fff;
+	text-align: center;
+	font-size: 22px;
+	padding: 12px 0;
+	width: 100%;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+  }
+
+  .timer {
+    margin: 0px;
+  }
+
