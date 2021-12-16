@@ -1,6 +1,6 @@
  # G-Meet
 
-> on-line non-face-to-face test platform using WebRTC & Custom YOLO
+> on-line non-face-to-face Exam platform using WebRTC & Custom YOLO
 >
 > Video link : [youtube](https://youtu.be/X1lW24KkNXI)
 
