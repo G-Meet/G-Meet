@@ -1,4 +1,8 @@
-let socket = io.connect("http://192.9.85.187:4000"); // 192.9.85.34
+/* server info */
+let serverLink = "http://192.9.85.187:4000";
+let socket = io.connect(serverLink);
+
+/* HTML elements */
 let divVideoChatLobby = document.getElementById("video-chat-lobby");
 let divVideoChat = document.getElementById("video-chat-room");
 let joinButton = document.getElementById("join");
@@ -18,9 +22,18 @@ var chatlog = document.getElementById("chatlog");
 let testPaper = document.getElementById("test-paper");
 let nonCratorSet = document.getElementById("nonCreator-set");
 let timerSet = document.getElementById("creator-set");
-let hour,minute,second;
-//let screenVideo = document.getElementById("screen-video");
+let displayTime1 = document.getElementById("time1"); // timer that the user see
+let displayTime2 = document.getElementById("time2"); //timer that the eximanator see
+let setTimerButton = document.getElementById("setTime");
+let timeInput = document.getElementById("time-input");
+let startTimeButton = document.getElementById("startTimer");
+let stopTimerButton = document.getElementById("stopTimer");
+let graphDiv = document.getElementById("graphPic"); // graph phase
 let screenRoom = document.getElementById("screen-room");
+/* end of HTML elements */
+
+/* global variable initialization */
+let hour, minute, second;
 let roomName;
 let creator = false;
 let rtcPeerConnection;
@@ -30,19 +43,13 @@ let isTimerStop = false;
 let screenSharingStream;
 let muteFlag = false;
 let hideCameraFlag = false;
-let displayTime1 = document.getElementById("time1"); // nonCreator에서 보는 타이머
-let displayTime2 = document.getElementById("time2"); //감독관이 보는 타이머
-let setTimerButton = document.getElementById("setTime");
-let timeInput = document.getElementById("time-input");
-let startTimeButton = document.getElementById("startTimer");
-let stopTimerButton = document.getElementById("stopTimer");
-let graphDiv = document.getElementById("graphPic");
 
+// initialize status
 mainRoom.style = "display:none";
 var picNum = 0;
 var picInterval = 0;
+var x;
 
-var x ;
 // Contains the stun server URL we will be using.
 let iceServers = {
 	iceServers: [
@@ -51,22 +58,23 @@ let iceServers = {
 	],
 };
 
-stopTimerButton.addEventListener("click",function(){
-	if(creator){
-		if(isTimerStop){
-			stopTimerButton.innerHTML="stop";
+/* timer section */
+stopTimerButton.addEventListener("click", function () { // ends timer
+	if (creator) {
+		if (isTimerStop) { // if timer were stopped
+			stopTimerButton.innerHTML = "stop";
 			isTimerStop = false;
-			socket.emit("stopTimer",roomName,{
+			socket.emit("stopTimer", roomName, {
 				t: time,
 			});
-			x = setInterval(function(){
-				minute = parseInt(time/60);
-				second = time%60;
-				if(second <= 9){
-					displayTime2.innerHTML = "<p class=\"timer\">" + minute + ":" + "0"+second  + "</p>"; 
+			x = setInterval(function () { // start new timer
+				minute = parseInt(time / 60);
+				second = time % 60;
+				if (second <= 9) {
+					displayTime2.innerHTML = "<p class=\"timer\">" + minute + ":" + "0" + second + "</p>";
 				}
-				else{
-					displayTime2.innerHTML = "<p class=\"timer\">" + minute + ":" + second  + "</p>"; 
+				else {
+					displayTime2.innerHTML = "<p class=\"timer\">" + minute + ":" + second + "</p>";
 				}
 
 				/* graph paste */
@@ -77,50 +85,50 @@ stopTimerButton.addEventListener("click",function(){
 					picInterval = -1;
 				}
 				/* ----------- */
-			
+
 				time--;
 				picInterval += 1;
 				console.log(time);
-				if(isTimerStop){
+				if (isTimerStop) {
 					clearInterval(x);
 				}
-				if(time < 0){
+				if (time < 0) {
 					clearInterval(x);
 					displayTime2.innerHTML = "시험 종료";
 				}
-			},1000);
+			}, 1000);
 		}
-		else{
-			stopTimerButton.innerHTML="restart";
+		else { // stop the timer
+			stopTimerButton.innerHTML = "restart";
 			isTimerStop = true;
-			socket.emit("stopTimer",roomName);
-			
+			socket.emit("stopTimer", roomName);
+
 		}
 	}
 });
-setTimerButton.addEventListener("click",function(){
-	if(creator){
-		 time =parseInt(timeInput.value)*60;
-		 minute = time/60;
-		 second = time%60;
+setTimerButton.addEventListener("click", function () { // sets timer
+	if (creator) {
+		time = parseInt(timeInput.value) * 60;
+		minute = time / 60;
+		second = time % 60;
 		console.log(minute);
-		displayTime2.innerHTML = "<p class=\"timer\">" + minute + ":" + "00"  + "</p>";    
+		displayTime2.innerHTML = "<p class=\"timer\">" + minute + ":" + "00" + "</p>";
 	}
 });
-startTimeButton.addEventListener("click",function(){
-	if(creator && timeInput){
-		socket.emit("startTimer",roomName,{
+startTimeButton.addEventListener("click", function () { // starts timer
+	if (creator && timeInput) { // if timeInput was set ( not 0 )
+		socket.emit("startTimer", roomName, { // broadcast start execution
 			t: time,
 		});
-		
-		 x = setInterval(function(){
-			minute = parseInt(time/60);
-			second = time%60;
-			if(second <= 9){
-				displayTime2.innerHTML = "<p class=\"timer\">" + minute + ":" + "0"+second  + "</p>"; 
+
+		x = setInterval(function () { // starts new timer
+			minute = parseInt(time / 60);
+			second = time % 60;
+			if (second <= 9) {
+				displayTime2.innerHTML = "<p class=\"timer\">" + minute + ":" + "0" + second + "</p>";
 			}
-			else{
-				displayTime2.innerHTML = "<p class=\"timer\">" + minute + ":" + second  + "</p>"; 
+			else {
+				displayTime2.innerHTML = "<p class=\"timer\">" + minute + ":" + second + "</p>";
 			}
 
 			/* graph paste */
@@ -131,35 +139,34 @@ startTimeButton.addEventListener("click",function(){
 				picInterval = -1;
 			}
 			/* ----------- */
-			
+
 			time--;
 			picInterval += 1;
 			console.log(time);
-			if(isTimerStop){
+			if (isTimerStop) {
 				clearInterval(x);
 			}
-			if(time < 0){
+			if (time < 0) {
 				clearInterval(x);
 				displayTime2.innerHTML = "시험 종료";
 			}
-		},1000);
+		}, 1000);
 	}
-	
+
 });
-socket.on("stopTimer",function(data){
-	if(isTimerStop){
-		
+socket.on("stopTimer", function (data) { // stop the timer for joinner's section
+	if (isTimerStop) { // restart the timer
 		isTimerStop = false;
 		console.log("restart");
 		var t = data.t;
-		x = setInterval(function(){
-			minute = parseInt(t/60);
-			second = t%60;
-			if(second <= 9){
-				displayTime1.innerHTML = "<p class=\"timer\">" + minute + ":" + "0"+second  + "</p>"; 
+		x = setInterval(function () {
+			minute = parseInt(t / 60);
+			second = t % 60;
+			if (second <= 9) {
+				displayTime1.innerHTML = "<p class=\"timer\">" + minute + ":" + "0" + second + "</p>";
 			}
-			else{
-				displayTime1.innerHTML = "<p class=\"timer\">" + minute + ":" + second  + "</p>"; 
+			else {
+				displayTime1.innerHTML = "<p class=\"timer\">" + minute + ":" + second + "</p>";
 			}
 
 			/* graph paste */
@@ -170,40 +177,37 @@ socket.on("stopTimer",function(data){
 				picInterval = -1;
 			}
 			/* ----------- */
-			
+
 			t--;
 			picInterval += 1;
-			if(isTimerStop){
+			if (isTimerStop) {
 				clearInterval(x);
 			}
-			if(t< 0){
+			if (t < 0) {
 				clearInterval(x);
 				displayTime1.innerHTML = "시험 종료";
 			}
-		},1000);
+		}, 1000);
 	}
-	else{
-		
+	else { // stop the timer
 		isTimerStop = true;
 		console.log("stop");
-		
 	}
 });
-socket.on("startTimer",function(data){
+socket.on("startTimer", function (data) { // start the timer for joinner's section
 	var t = data.t;
-	
-	// 동시 타이머 돌리기
-	 x = setInterval(function() {
-		minute = parseInt(t/60);
-		second = t%60;
-		if(second <= 9){
-			displayTime1.innerHTML = "<p class=\"timer\">" + minute + ":" + "0"+second  + "</p>"; 
+
+	x = setInterval(function () {
+		minute = parseInt(t / 60);
+		second = t % 60;
+		if (second <= 9) {
+			displayTime1.innerHTML = "<p class=\"timer\">" + minute + ":" + "0" + second + "</p>";
 		}
-		else{
-			displayTime1.innerHTML = "<p class=\"timer\">" + minute + ":" + second  + "</p>"; 
+		else {
+			displayTime1.innerHTML = "<p class=\"timer\">" + minute + ":" + second + "</p>";
 		}
-		peerVideo.style="display:none";
-		testPaper.style="display:block";
+		peerVideo.style = "display:none";
+		testPaper.style = "display:block";
 		/* graph paste */
 		if (picInterval >= 1) {
 			var graphPath = "http://192.9.85.187:4000/plotImage/room1-graph.png?time=" + new Date().getTime();
@@ -212,42 +216,37 @@ socket.on("startTimer",function(data){
 			picInterval = -1;
 		}
 		/* ----------- */
-			
+
 		t--;
 		picInterval += 1;
-		if(isTimerStop){
+		if (isTimerStop) {
 			clearInterval(x);
 		}
-		if(t< 0){
+		if (t < 0) {
 			// peerVideo.style="display:block";
-			testPaper.style="display:none";
+			testPaper.style = "display:none";
 			displayTime1.innerHTML = "시험 종료";
 			clearInterval(x);
 		}
-	},1000);
+	}, 1000);
 });
+/* end of timer section */
 
-
-
-
-
-chatButton.addEventListener("click",function(){
+/* chatting section */
+chatButton.addEventListener("click", function () { // broadcast chatting message to all users
 	socket.emit("sendingMessage", roomName, {
 		message: message.value,
 		userName: userName.value,
-	  });
-	chatlog.innerHTML +=
-    "<p><strong>" + userName.value + ": </strong>" + message.value + "</p>";
+	});
+	chatlog.innerHTML += "<p><strong>" + userName.value + ": </strong>" + message.value + "</p>";
 });
-
-socket.on("broadcastMessage", function (data) {
-	//alert(data.message);
-	chatlog.innerHTML +=
-    "<p><strong>" + data.userName + ": </strong>" + data.message + "</p>";
+socket.on("broadcastMessage", function (data) { // get chatting message from server
+	chatlog.innerHTML += "<p><strong>" + data.userName + ": </strong>" + data.message + "</p>";
 });
+/* end of chatting section */
 
-
-muteButton.addEventListener("click", function () {
+/* utility button section */
+muteButton.addEventListener("click", function () { // toggle mute
 	muteFlag = !muteFlag;
 	if (muteFlag) {
 		userStream.getTracks()[0].enabled = false;
@@ -261,22 +260,20 @@ muteButton.addEventListener("click", function () {
 		document.getElementById("mute1").src = "./img/icon/micOnButton.png";
 	}
 });
-
-hideCameraButton.addEventListener("click", function () {
+hideCameraButton.addEventListener("click", function () { // toggle camera
 	hideCameraFlag = !hideCameraFlag;
 	if (hideCameraFlag) {
 		userStream.getTracks()[1].enabled = false;
 		document.getElementById("hide1").src = "./img/icon/videoOffButton.png";
 		// downloadVideo();
-		
+
 	}
 	else {
 		userStream.getTracks()[1].enabled = true;
 		document.getElementById("hide1").src = "./img/icon/videoOnButton.png";
 	}
 });
-
-leaveRoomButton.addEventListener("click", function () {
+leaveRoomButton.addEventListener("click", function () { // toggle room left button
 	socket.emit("leave", roomName);
 	divVideoChatLobby.style = "display:block";
 	mainRoom.style = "display:none";
@@ -292,15 +289,11 @@ leaveRoomButton.addEventListener("click", function () {
 		rtcPeerConnection.close();
 		rtcPeerConnection = null;
 	}
-
-	/*
-	// 위에 한 줄과 아래 두줄은 같은 의미
-	 userVideo.srcObject.getTracks()[0].stop();
-	userVideo.srcObject.getTracks()[1].stop();
-	 */
 });
+/* end of utility button section */
 
-socket.on("leave", function () {
+/* login & logout section */
+socket.on("leave", function () { // someone left the room
 	if (rtcPeerConnection) {
 		rtcPeerConnection.ontrack = null;
 		rtcPeerConnection.onicecandidate = null;
@@ -317,9 +310,7 @@ socket.on("leave", function () {
 		rtcPeerConnection = null;
 	}
 });
-
-
-joinButton.addEventListener("click", function () {
+joinButton.addEventListener("click", function () { // login
 	if (examName.value == "") {
 		alert("정확한 수험번호를 입력하세요");
 	} else if (userPassword.value == "") {
@@ -328,34 +319,30 @@ joinButton.addEventListener("click", function () {
 		socket.emit("connectStart", examName.value, userPassword.value);
 	}
 });
-
-socket.on("connectAgreed", function (roomN) {
+socket.on("connectAgreed", function (roomN) { // permission accepted
 	roomName = roomN;
 	socket.emit("join", roomName);
 });
-socket.on("connectReject", function (roomN) {
+socket.on("connectReject", function (roomN) { // permission denied
 	alert("잘못된 입력입니다. 다시 입력해주세요.");
 	examName.innerHTML = "";
 	userPassword.innerHTML = "";
 });
+socket.on("created", function () { // when nobody was in the room
+	creator = true; // I'm the creator of this room
 
-// Triggered when a room is succesfully created.
-
-socket.on("created", function () {
-	creator = true;
-
+	// media initialize
 	navigator.mediaDevices
 		.getUserMedia({
 			audio: true,
 			video: { width: 720, height: 720 },
 		})
 		.then(function (stream) {
-
 			/* use the stream */
 			userStream = stream;
 			divVideoChatLobby.style = "display:none";
 			mainRoom.style = "display:block";
-			timerSet.style="display:block";
+			timerSet.style = "display:block";
 			userVideo.srcObject = stream;
 			userVideo.onloadedmetadata = function (e) {
 				userVideo.play();
@@ -365,14 +352,11 @@ socket.on("created", function () {
 			/* handle the error */
 			alert("Couldn't Access User Media");
 		});
-
 });
+socket.on("joined", function () { // when somebody was in the room
+	creator = false; // I'm not the creator
 
-// Triggered when a room is succesfully joined.
-
-socket.on("joined", function () {
-	creator = false;
-
+	// media initialize
 	navigator.mediaDevices
 		.getUserMedia({
 			audio: true,
@@ -394,17 +378,13 @@ socket.on("joined", function () {
 			/* handle the error */
 			alert("Couldn't Access User Media");
 		});
-
 });
-
-// Triggered when a room is full (meaning has 2 people).
-
-socket.on("full", function () {
+socket.on("full", function () { // when there is no seat left
 	alert("Room is Full, Can't Join");
 });
+/* end of login & logout section */
 
-// Triggered when a peer has joined the room and ready to communicate.
-// ready상태인 소켓을 전달 받음 -> RTCPeerConnection 객체 생성
+/* WebRTC trigger section */
 socket.on("ready", function () {
 	if (creator) {
 		rtcPeerConnection = new RTCPeerConnection(iceServers);
@@ -412,10 +392,8 @@ socket.on("ready", function () {
 		rtcPeerConnection.ontrack = OnTrackFunction;
 		rtcPeerConnection.addTrack(userStream.getTracks()[0], userStream);
 		rtcPeerConnection.addTrack(userStream.getTracks()[1], userStream);
-		/* 일단 시작부터 displaySTream도 추가해보려고  */
-		//  rtcPeerConnection.addTrack(screenSharingStream.getTracks()[0],screenSharingStream);
 		console.log("display capture success")
-		/* 여기까지 추가한겨 */
+
 		rtcPeerConnection
 			.createOffer()
 			.then((offer) => {
@@ -428,16 +406,10 @@ socket.on("ready", function () {
 			});
 	}
 });
-
-// Triggered on receiving an ice candidate from the peer.
-
 socket.on("candidate", function (candidate) {
 	let icecandidate = new RTCIceCandidate(candidate);
 	rtcPeerConnection.addIceCandidate(icecandidate);
 });
-
-// Triggered on receiving an offer from the person who created the room.
-
 socket.on("offer", function (offer) {
 	if (!creator) {
 		rtcPeerConnection = new RTCPeerConnection(iceServers);
@@ -445,10 +417,8 @@ socket.on("offer", function (offer) {
 		rtcPeerConnection.ontrack = OnTrackFunction;
 		rtcPeerConnection.addTrack(userStream.getTracks()[0], userStream);
 		rtcPeerConnection.addTrack(userStream.getTracks()[1], userStream);
-		/* 일단 시작부터 displaySTream도 추가해보려고  */
-		//rtcPeerConnection.addTrack(screenSharingStream.getTracks()[0],screenSharingStream);
 		console.log("display capture success")
-		/* 여기까지 추가한겨 */
+
 		rtcPeerConnection.setRemoteDescription(offer);
 		rtcPeerConnection
 			.createAnswer()
@@ -461,24 +431,15 @@ socket.on("offer", function (offer) {
 			});
 	}
 });
-
-// Triggered on receiving an answer from the person who joined the room.
-
 socket.on("answer", function (answer) {
 	rtcPeerConnection.setRemoteDescription(answer);
 });
-
-// Implementing the OnIceCandidateFunction which is part of the RTCPeerConnection Interface.
-
 function OnIceCandidateFunction(event) {
 	console.log("Candidate");
 	if (event.candidate) {
 		socket.emit("candidate", event.candidate, roomName);
 	}
 }
-
-// Implementing the OnTrackFunction which is part of the RTCPeerConnection Interface.
-
 function OnTrackFunction(event) {
 	peerVideo.srcObject = event.streams[0];
 	peerVideo.onloadedmetadata = function (e) {
@@ -486,8 +447,4 @@ function OnTrackFunction(event) {
 	};
 
 }
-
-// 감독관 - 감독관의 웹캠 화면 필요x
-// 응시자 - 본인 웹캠과 감독관의 공유 화면 필요
-
-
+/* end of WebRTC trigger section */
